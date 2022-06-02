@@ -33,34 +33,9 @@ class DayController {
     })
   };
 
-  // getDay(req, res) {
-  //   const file = `./data/${req.params.date}.json`;
-
-  //   fse.pathExists(file, (err, exist) => {
-  //     if (err) {
-  //       console.log(err);
-  //     } else if (exist) {
-  //       fse.open(file, (err, data) => {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           res.send(data);
-  //         }
-  //       })
-  //     } else if (!exist) {
-  //       fse.outputFile(file, JSON.stringify(new Day), (err, data) => {
-  //         if (err) {
-  //           console.log(err);
-  //         } else {
-  //           fse.readFile(file, (err, data) => {
-  //             res.send(data);
-  //           })
-  //         }
-  //       })
-  //     }
-  //   })
-  //   // res.send(`${req.params.date}`);
-  // }
+  getDay(req, res) {
+    res.send(moment((req.params.date).slice(1)).format('DD.MM.YYYY'));
+  }
 
 }
 
