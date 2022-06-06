@@ -1,4 +1,6 @@
 const moment = require('moment');
+const fse = require('fs-extra');
+const Day = require('../services/createDay');
 
 moment.updateLocale('en', {
   week: {
@@ -6,9 +8,9 @@ moment.updateLocale('en', {
   },
 });
 
-class DayController {
+function DayController() {
 
-  getNumberOfDays(req, res) {
+  this.getNumberOfDays = (req, res) => {
     const month = req.params.month.length > 2 ? req.params.month.slice(1) : `0${req.params.month.slice(1)}`;
     const year = req.params.year.slice(1);
     const startOfWeek = moment(`01.${month}.${year}`, 'DD.MM.YYYY').startOf('month').startOf('week').subtract(1, 'day');
@@ -37,8 +39,23 @@ class DayController {
     })
   };
 
-  getDay(req, res) {
-    res.send(moment((req.params.date).slice(1)).format('DD.MM.YYYY'));
+  this.getDay = async (req, res) => {
+    try {
+      const date = moment(req.params.date.slice(1)).format('DD.MM.YYYY');
+      const worksList = await fse.readJson('./data/workDays.json');
+
+      if (worksList.hasOwnProperty('date')) {
+        res.send(worksList[date]);
+      } else {
+        worksList[date] = new Day(date);
+        await fse.writeJson('./data/workDays.json', worksList, { spaces: 2 });
+        res.send(worksList[date]);
+      }
+    } catch (e) {
+      res.send({ massage: `Server Error: ${e}` });
+      console.log(e);
+    }
+
   };
 
 }
