@@ -1,10 +1,16 @@
 const { v4: uuid } = require('uuid');
 const fse = require('fs-extra');
 const bcrypt = require('bcryptjs');
+const { param, validationResult } = require('express-validator');
 
 function UsersController() {
   this.registration = async (req, res) => {
     try {
+      const validationErrors = validationResult(req);
+      if (!validationErrors.isEmpty()) {
+        return res.status(400).json({ massage: 'uncorrect request', validationErrors });
+      }
+
       const usersList = await fse.readJson('./data/users.json');
       const { email, password } = req.body;
       const candidate = usersList.find(user => user.email === email);
