@@ -34,5 +34,17 @@
     "day": "10",
     "month": "06",
     "workList": []
+  },
+  "12.06.2022": {
+    "fullDate": "12.06.2022",
+    "day": "12",
+    "month": "06",
+    "workList": []
+  },
+  "Invalid date": {
+    "fullDate": "Invalid date",
+    "day": "In",
+    "month": "al",
+    "workList": []
   }
 }

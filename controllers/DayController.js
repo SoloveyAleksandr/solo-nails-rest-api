@@ -42,13 +42,14 @@ function DayController() {
   this.getDay = async (req, res) => {
     try {
       const date = moment(req.params.date.slice(1)).format('DD.MM.YYYY');
-      const worksList = await fse.readJson('./data/workDays.json');
+      let worksList = await fse.readJson('./data/workDays.json');
 
-      if (worksList.hasOwnProperty('date')) {
+      if (worksList.hasOwnProperty(date)) {
         res.send(worksList[date]);
       } else {
         worksList[date] = new Day(date);
         await fse.writeJson('./data/workDays.json', worksList, { spaces: 2 });
+        worksList = await fse.readJson('./data/workDays.json');
         res.send(worksList[date]);
       }
     } catch (e) {
@@ -57,6 +58,23 @@ function DayController() {
     }
 
   };
+
+  this.addTime = async () => {
+    try {
+      const date = moment(req.params.date.slice(1)).format('DD.MM.YYYY');
+      let worksList = await fse.readJson('./data/workDays.json');
+
+      if (worksList.hasOwnProperty(date)) {
+        worksList[date].workList.push(req.body.time);
+        await fse.writeJson('./data/workDays.json', worksList, { spaces: 2 });
+      } else {
+        res.send({ massage: 'Date not found' });
+      }
+    } catch (e) {
+      res.send({ massage: `Server Error: ${e}` });
+      console.log(e);
+    }
+  }
 
 }
 
