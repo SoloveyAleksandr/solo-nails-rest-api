@@ -1,6 +1,7 @@
 const moment = require('moment');
 const fse = require('fs-extra');
 const Day = require('../services/createDay');
+const WorkTime = require('../services/createTime');
 
 moment.updateLocale('en', {
   week: {
@@ -76,8 +77,9 @@ function DayController() {
       let worksList = await fse.readJson('./data/workDays.json');
 
       if (worksList.hasOwnProperty(date)) {
-        worksList[date].workList.push(req.body);
+        worksList[date].workList.push(new WorkTime(req.body.time));
         await fse.writeJson('./data/workDays.json', worksList, { spaces: 2 });
+        res.send({massage: 'SUCCESS!'})
       } else {
         res.send({ massage: 'Date not found' });
       }
